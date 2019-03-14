@@ -2,11 +2,11 @@ javascript:
 function loadUI() {
 	html=`
 	<table class='vis'>
-	<tr><th colspan='3'>Tribal Wars Map Attack Bot by -2142-</th></tr>
+	<tr><th colspan='3'>Tribal Wars Map Attack Bot by Darxeal</th></tr>
 	<tr>
 	<td><table>
-	<tr><td>Pùvod:</td><td><input type='text' id='source' style="width:42px;"> <span id="a_source">(klikni na mapì)</span></td></tr>
-	<tr><td>Cíl:</td><td><input type='text' id='target' style="width:42px;"> <span id="a_target">(klikni na mapì)</span></td></tr>
+	<tr><td>PÅ¯vod:</td><td><input type='text' id='source' style="width:42px;"> <span id="a_source">(klikni na mapÄ›)</span></td></tr>
+	<tr><td>CÃ­l:</td><td><input type='text' id='target' style="width:42px;"> <span id="a_target">(klikni na mapÄ›)</span></td></tr>
 	<tr><td><select size="1" id="o_send" style='width:40px'><option>Dopad:</option><option>Odchod:</option></select></td><td><input type='datetime-local' id='timepicker' style="width:190px;"></td></tr>
 	</table></td><td><table>`;
 	html+="<tr>";
@@ -19,7 +19,7 @@ function loadUI() {
 	</table></td><td><table>
 	<tr><td><img src='https://dscs.innogamescdn.com/8.86/33385/graphic/unit/unit_snob.png'></td><td> <input type='number' style='width:40px' id='v_train' min="0"></td></tr>
 	<tr><td><img src='https://dscs.innogamescdn.com/8.86/33385/graphic/unit/unit_catapult.png'></td><td> <select size="1" id="c_catapult_target" style='width:50px'>
-	<option>Hlavní budova</option><option>Kasárna</option><option>Stáj</option><option>Dílna</option><option>Strážní vìž</option><option>Panský dvùr</option><option>Kovárna</option><option>Nádvoøí</option><option>Socha</option><option>Tržištì</option><option>Døevorubec</option><option>Lom na tìžbu hlíny</option><option>Železný dùl</option><option>Selský dvùr</option><option>Skladištì</option><option>Hradby</option>
+	<option>HlavnÃ­ budova</option><option>KasÃ¡rna</option><option>StÃ¡j</option><option>DÃ­lna</option><option>StrÃ¡Å¾nÃ¡ vÄ›Å¾</option><option>PanskÃ½ dvÅ¯r</option><option>KovÃ¡rna</option><option>NÃ¡dvoÅ™Ã­</option><option>Socha</option><option>TrÅ¾iÅ¡tÄ›</option><option>DÅ™evorubec</option><option>Lom na tÄ›bu hlÃ­ny</option><option>Å¾eleznÃ½ dÅ¯l</option><option>SelskÃ½ dvÅ¯r</option><option>SkladiÅ¡tÄ›</option><option>Hradby</option>
 	</select></td></tr>
 	<tr><td><input id='add_u' type='button' value='u' onclick='addAttack(false)' class='attack btn btn-attack btn-target-action'></td><td>
 	<input id='add_p' type='button' value='p' onclick='addAttack(true)' class='support btn btn-support btn-target-action'></td></tr>
@@ -28,7 +28,7 @@ function loadUI() {
 	content_value.children[0].outerHTML=html;
 	timepicker.valueAsNumber=Timing.getCurrentServerTime()+2*60*60*1000;
 	attacks=[];
-	map_legend.outerHTML="<table id='attacks_table' class='vis'><tr><th colspan='3'>Povely</th><th>Jednotky</th><th>Trvání</th><th>Odchod</th><th>Pøíchod</th><th colspan='2'>Odchod za</th></tr></table>";
+	map_legend.outerHTML="<table id='attacks_table' class='vis'><tr><th colspan='3'>Povely</th><th>Jednotky</th><th>TrvÃ¡nÃ­</th><th>Odchod</th><th>PÅ™Ã­chod</th><th colspan='2'>Odchod za</th></tr></table>";
 	setInterval(function(){
 		for(i=0;i<attacks.length;i++) if(attacks[i].cd>0){
 			attacks[i].cd--;
@@ -176,7 +176,7 @@ function updateVillage(coords,t,center=true){
 	y = coords.toString().substring(3,6);
 	if(t) target.value=x+"|"+y; else source.value=x+"|"+y;
 	if(center) TWMap.map.centerPos(x,y);
-	if(typeof TWMap.villages[coords]!="undefined") html="<a href='javascript:updateVillage("+coords+","+t+")'>"+TWMap.villages[coords].name.substring(0,20)+"</a>"; else html="Název nenalezen";
+	if(typeof TWMap.villages[coords]!="undefined") html="<a href='javascript:updateVillage("+coords+","+t+")'>"+TWMap.villages[coords].name.substring(0,20)+"</a>"; else html="Nï¿½zev nenalezen";
 	if(t) a_target.innerHTML=html; else a_source.innerHTML=html;
 	redraw();
 	
@@ -234,7 +234,7 @@ function attackVillage(attack) {
 				setTimeout(function(attack){
 					if(typeof troop_confirm_go == "object"){
 						troop_confirm_go.click();
-						$("#a"+attack.id).html("<span style='color:green;'>Odeslán</span>");
+						$("#a"+attack.id).html("<span style='color:green;'>Odeslï¿½n</span>");
 					}else{
 						popup_box_popup_command.children[0].children[0].click();
 						$("#a"+attack.id).html("<span style='color:red;'>Chyba</span>");
@@ -248,7 +248,7 @@ function attackVillage(attack) {
 
 }
 units=["spear","sword","axe","archer","spy","light","marcher","heavy","ram","catapult","knight","snob"];
-if(window.location.href.indexOf("screen=map")!=-1) loadUI(); else alert("Script pouštìj jen v mapì"); 
+if(window.location.href.indexOf("screen=map")!=-1) loadUI(); else alert("Script pouÅ¡tÄ›j jen v mapÄ›"); 
 ctx=c.getContext("2d");
 var waiting=false;
 var adding=false;

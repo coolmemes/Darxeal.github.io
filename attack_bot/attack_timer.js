@@ -1,5 +1,5 @@
 javascript:
-/* TribalWars AttackTimer by -2142- */
+/* TribalWars AttackTimer by Darxeal */
 place_confirm_units.outerHTML += "<br><table class='vis'><tbody id='tb'><tr><th>AttackTimer by -2142-</th></tr><tr><td id='trow'>" +
     "Dopad v <input type='datetime-local' id='wtf'><input type='button' value='Potvrdit' class='btn' onclick='run()'></td></tr></tbody></table>";
 
@@ -31,7 +31,7 @@ function run() {
     updatecd();
 
     itv = setInterval(updatecd, 1000);
-    
+
     setTimeout(function () {
         clearInterval(itv);
         $("#troop_confirm_go").click();
