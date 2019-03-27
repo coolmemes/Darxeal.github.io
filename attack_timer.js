@@ -30,10 +30,10 @@ place_confirm_units.outerHTML += `
 
     
 // parse current attack duration
-attackDuration = parseInt(date_arrival.children[0].dataset.duration) * 1000;
+var attackDuration = parseInt(date_arrival.children[0].dataset.duration) * 1000;
 // all time variables are in milliseconds
 
-timezoneDifference = new Date().getTimezoneOffset() * 60 * 1000;
+var timezoneDifference = new Date().getTimezoneOffset() * 60 * 1000;
 
 // set the input time to the default attack arrival time
 datetime_input.valueAsNumber = Timing.getCurrentServerTime() + attackDuration - timezoneDifference;
@@ -41,31 +41,31 @@ datetime_input.valueAsNumber = Timing.getCurrentServerTime() + attackDuration - 
 // called on Confirm click
 function confirmAttack() {
 
-    arrivalTime = datetime_input.valueAsNumber + timezoneDifference;
-    timeout = arrivalTime - Timing.getCurrentServerTime() - attackDuration;
+    var arrivalTime = datetime_input.valueAsNumber + timezoneDifference;
+    var timeout = arrivalTime - Timing.getCurrentServerTime() - attackDuration;
 
     
-    //display time info
-    d = new Date(arrivalTime);
+    //display info
+    var d = new Date(arrivalTime);
     first_row.innerHTML = "Leaves in <span id='time_left'></span>";
     second_row.innerHTML += "Arrival in " + d.toLocaleTimeString() + ":<span class='grey small'>" + zeropad(d.getMilliseconds(), 3) + "</span>";
     
     
     //display timer
-    secondsLeft = Math.floor(timeout / 1000);
+    var secondsLeft = Math.floor(timeout / 1000);
     function update_timer() {
-        hours = Math.floor(secondsLeft / 3600);
-        minutes = Math.floor(secondsLeft / 60) - hours * 60;
-        seconds = secondsLeft - hours * 3600 - minutes * 60;
+        var hours = Math.floor(secondsLeft / 3600);
+        var minutes = Math.floor(secondsLeft / 60) - hours * 60;
+        var seconds = secondsLeft - hours * 3600 - minutes * 60;
 
         time_left.innerHTML = hours + ":" + zeropad(minutes, 2) + ":" + zeropad(seconds, 2);
         secondsLeft--;
     }
     update_timer();
-    time_left_interval = setInterval(update_timer, 1000);
+    var time_left_interval = setInterval(update_timer, 1000);
 
 
-    //start timer
+    //send attack after timeout
     setTimeout(function () {
         clearInterval(time_left_interval);
         $("#troop_confirm_go").click();
