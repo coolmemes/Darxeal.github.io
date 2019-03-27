@@ -302,7 +302,7 @@ function initAttackTimer(attack) {
                             attack.slowest_unit = key;
                         }
 
-                    } else if (traveltime > max_time) {
+                    } else if (traveltime >= max_time) {
                         max_time = traveltime;
                         attack.slowest_unit = key;
                     }
