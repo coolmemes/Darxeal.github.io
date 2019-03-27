@@ -486,7 +486,7 @@ function attackVillage(attack) {
 var attacks = [];
 var units = game_data.units;
 if (units[units.length - 1] == "militia"){
-    delete units[units.length - 1]
+    units.pop();
 }
 var timezoneDifference = new Date().getTimezoneOffset() * 60 * 1000;
 
