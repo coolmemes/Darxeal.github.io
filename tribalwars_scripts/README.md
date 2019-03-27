@@ -9,12 +9,12 @@ You have several options:
 * Paste the script into the browser console (press F12 to open it up)
 
 ## Attack timer
-``javascript:$.getScript("https://darxeal.github.io/attack_timer.js");``
+``javascript:$.getScript("https://darxeal.github.io/tribalwars_scripts/attack_timer.js");``
 
 You can specify when an attack should arrive, and the script will calculate, wait and send the attack at the right time for you. No more setting up alarms! :-)
 
 ## Farm bot
-``javascript:$.getScript("https://darxeal.github.io/farm_bot.js");``
+``javascript:$.getScript("https://darxeal.github.io/tribalwars_scripts/farm_bot.js");``
 
 ## Map attack planner
-``javascript:$.getScript("https://darxeal.github.io/map_attacker/main.js");``
+``javascript:$.getScript("https://darxeal.github.io/tribalwars_scripts/map_attacker/main.js");``
