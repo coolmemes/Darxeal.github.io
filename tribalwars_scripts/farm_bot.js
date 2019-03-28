@@ -5,10 +5,10 @@ if (window.location.href.indexOf("screen=am_farm") == -1)
 content_value.innerHTML = "<div id='mybox' class='vis'></div>" + content_value.innerHTML;
 
 language = {
-	scriptName = "FarmBot by Darxeal",
-	intervalMinutes = "Interval (minutes)",
-	maxAttacks = "Max attacks",
-	start = "Start",
+	scriptName : "FarmBot by Darxeal",
+	intervalMinutes : "Interval (minutes)",
+	maxAttacks : "Max attacks",
+	start : "Start",
 	attacksSent: "Attacks sent",
 	nextWave: "Next wave"
 }
