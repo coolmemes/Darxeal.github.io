@@ -1,8 +1,8 @@
 javascript:
 if (window.location.href.indexOf("screen=am_farm") == -1)
-	alert("Run the script in the Farming AsattackDelaystant");
+	alert("Run the script in the Farming Assistant");
 
-content_value.innerHTML = "<div id='mybox' class='vis'></div>" + content_value.innerHTML;
+content_value.innerHTML = "<div id='mybox' class='vis' style='width: 300px; margin: auto;'></div>" + content_value.innerHTML;
 
 language = {
 	scriptName : "FarmBot by Darxeal",
@@ -15,9 +15,9 @@ language = {
 
 mybox.innerHTML += `
 <h4>${language.scriptName}</h4>
-<table style='width: 600px' id='farmbot_table'>
+<table style='width: 100%' id='farmbot_table'>
 	<tr>
-		<td>${language.intervalMinutess}</td>
+		<td>${language.intervalMinutes}</td>
 		<td><input id='i1' type='number' value='0'></td>
 	</tr>
 	<tr>
@@ -27,9 +27,15 @@ mybox.innerHTML += `
 	<tr>
 		<td colspan=2 align='center'><input type='button' onclick='run()' value='${language.start}' class='btn'></td>
 	</tr>
-</table>`;
+	</table>`;
+	
+// make sure the listed villages dont vanish after first wave
+if (!attacked_checkbox.checked) $("#attacked_checkbox").click();
 
 function run() {
+
+	// make sure again
+	if (!attacked_checkbox.checked) $("#attacked_checkbox").click();
 
 	// parse input fields
 	var interval = Number(i1.value);
@@ -41,8 +47,6 @@ function run() {
 	var countdown = 0;
 	var attacks = 0;
 	
-	// make sure the listed villages dont vanish after first wave
-	if (!attacked_checkbox.checked) $("#attacked_checkbox").click();
 	
 	// get id of the troop template we want to use
 	var templateID = Number(document.forms[0].action.split("&")[4].replace("template_id=", ""));
