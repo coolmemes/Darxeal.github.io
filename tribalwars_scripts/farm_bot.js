@@ -1,81 +1,103 @@
 javascript:
-	if (window.location.href.indexOf("screen=am_farm") != -1) {
+if (window.location.href.indexOf("screen=am_farm") == -1)
+	alert("Run the script in the Farming AsattackDelaystant");
 
-		content_value.innerHTML = "<div id='mybox' class='vis'></div>" + content_value.innerHTML;
-		mybox.innerHTML += `
-		<h4>FarmBot by Darxeal</h4>
-		<table style='width:100%'>
-			<tr>
-				<td>Interval (minutes)</td>
-				<td><input id='i1' type='number' value='0'></td>
-			</tr>
-			<tr>
-				<td>Max vesnic</td>
-				<td><input id='i2' type='number' value='0'></td>
-			</tr>
-			<tr>
-				<td colspan=2 align='center'><input type='button' onclick='run()' value='Start' class='btn'></td>
-			</tr>
-		</table>`;
+content_value.innerHTML = "<div id='mybox' class='vis'></div>" + content_value.innerHTML;
 
-		var sleep = 1000;
-		var countdown = 0;
-		var attacks = 0;
-		if (!attacked_checkbox.checked) $("#attacked_checkbox").click();
-		var template_id = Number(document.forms[0].action.split("&")[4].replace("template_id=", ""));
-		var villages = [];
-		var list = plunder_list.getElementsByTagName("tr");
-		for (i = 0; i < list.length; i++) {
-			if (list[i].id.substr(0, 3) == "vil") villages.push(list[i].id.replace("village_", ""));
-		}
-		villages.filter(Number);
+language = {
+	scriptName = "FarmBot by Darxeal",
+	intervalMinutes = "Interval (minutes)",
+	maxAttacks = "Max attacks",
+	start = "Start",
+	attacksSent: "Attacks sent",
+	nextWave: "Next wave"
+}
 
-		function run() {
-			if ((interval = Number(i1.value)) > 0)
-				if ((max_vesnic = Number(i2.value)) > 0) {
-					mybox.innerHTML = `
-					<h4>FarmBot by -2142-</h4>
-					<table style='width:100%'>
-						<tr>
-							<td>Attacks sent: </td>
-							<td id='totalattacks'>0</td>
-						</tr>
-						<tr>
-							<td>Next wave: </td>
-							<td id='next_wave'></td>
-						</tr>
-					</table>`;
+mybox.innerHTML += `
+<h4>${language.scriptName}</h4>
+<table style='width: 600px' id='farmbot_table'>
+	<tr>
+		<td>${language.intervalMinutess}</td>
+		<td><input id='i1' type='number' value='0'></td>
+	</tr>
+	<tr>
+		<td>${language.maxAttacks}</td>
+		<td><input id='i2' type='number' value='0'></td>
+	</tr>
+	<tr>
+		<td colspan=2 align='center'><input type='button' onclick='run()' value='${language.start}' class='btn'></td>
+	</tr>
+</table>`;
+
+function run() {
+
+	// parse input fields
+	var interval = Number(i1.value);
+	var maxAttacks = Number(i2.value);
+
+	if (interval <= 0 || maxAttacks <= 0)
+		return;
+
+	var countdown = 0;
+	var attacks = 0;
+	
+	// make sure the listed villages dont vanish after first wave
+	if (!attacked_checkbox.checked) $("#attacked_checkbox").click();
+	
+	// get id of the troop template we want to use
+	var templateID = Number(document.forms[0].action.split("&")[4].replace("template_id=", ""));
+	
+	// get the IDs of all listed villages
+	var villageIDs = [];
+	var villageListRows = plunder_list.getElementsByTagName("tr");
+	for (i = 0; i < villageListRows.length; i++) {
+		if (villageListRows[i].id.substr(0, 3) == "vil") villageIDs.push(villageListRows[i].id.replace("village_", ""));
+	}
+	villageIDs.filter(Number);
+
+	// display info
+	farmbot_table.innerHTML = `
+	<tr>
+		<td>${language.attacksSent}: </td>
+		<td id='total_attacks'>0</td>
+	</tr>
+	<tr>
+		<td>${language.nextWave}: </td>
+		<td id='next_wave'><b>00:00</b></td>
+	</tr>`;
 
 
-					function attack() {
-						i = 0;
-						countdown = interval * 60;
-						si = setInterval(function () {
-							Accountmanager.farm.current_units.light = "99999";
-							Accountmanager.farm.current_units.spy = "99999";
-							Accountmanager.farm.sendUnits(this, villages[i], template_id);
-							i++;
-							attacks++;
-							totalattacks.innerHTML = "<b>" + attacks + "</b>";
-							if (i == villages.length) clearInterval(si);
-							if (i == max_vesnic) clearInterval(si);
-						}, sleep);
-					}
+	function sendWave() {
 
-					attack();
-					main = setInterval(function () {
-						attack();
-					}, interval * 60 * 1000);
+		// the farming assistant is not aware of units coming back, so we trick it
+		Accountmanager.farm.current_units.light = "99999";
+		Accountmanager.farm.current_units.spy = "99999";
 
-					function getzero(value) {
-						if (value < 10) { return "0" + value.toString(); } else { return value; }
-					}
+		countdown = interval * 60;
+		var i = 0;
+		attackDelay = setInterval(function () {
 
-					setInterval(function () {
-						countdown--;
-						next_wave.innerHTML = "<b>" + Math.floor(countdown / 60) + ":" + getzero(countdown - Math.floor(countdown / 60) * 60) + "</b>";
-					}, 1000);
+			Accountmanager.farm.sendUnits(this, villageIDs[i], templateID);
 
-				}
-		}
-	} else { alert("Run the script in the Farming Assistant"); }
+			i++;
+			attacks++;
+			total_attacks.innerHTML = "<b>" + attacks + "</b>";
+
+			if (i == villageIDs.length || i == maxAttacks)
+				clearInterval(attackDelay);
+		}, 1000);
+	}
+
+	sendWave();
+	setInterval(sendWave, interval * 60 * 1000);
+
+	function zeropad(value) {
+		return value < 10 ? "0" + value.toString() : value;
+	}
+
+	// display countdown to the next wave
+	setInterval(function () {
+		countdown--;
+		next_wave.innerHTML = "<b>" + Math.floor(countdown / 60) + ":" + zeropad(countdown - Math.floor(countdown / 60) * 60) + "</b>";
+	}, 1000);
+}
