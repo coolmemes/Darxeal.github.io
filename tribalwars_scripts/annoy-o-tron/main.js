@@ -1,43 +1,6 @@
 javascript:
 
-$("#content_value").html(`
-<table class="vis">
-    <tr>
-        <th>Annoy-o-Tron</th>
-    </tr>
-    <td>
-        <img src="https://gamepedia.cursecdn.com/hearthstone_gamepedia/thumb/b/b2/Annoyotron_full.jpg/400px-Annoyotron_full.jpg?version=7724bf667f441932bc609f49473f0377">
-    </td>
-    <td>
-        <div><i>Skript pošle všechny jednotky ve vesnici, a po chvilce útok zruší. Takto pokračuje v náhodných intervalech dokud nezavřeš tuhle kartu.</i></div>
-        <br>
-        <table>
-            <tr>
-                <td>Cíl:</td>
-                <td><input type="text" name="target" id="input-target" value="XXX|YYY"></td>
-            </tr>
-            <tr>
-                <td>První útok se odešle za (minuty)</td>
-                <td><input type="number" name="delay" id="input-delay" value="120"></td>
-            </tr>
-            <tr>
-                <td>Minimální interval (minuty)</td>
-                <td><input type="number" name="interval-min" id="input-interval-min" value="30"></td>
-            </tr>
-            <tr>
-                <td>Maximální interval (minuty)</td>
-                <td><input type="number" name="interval-max" id="input-interval-max" value="60"></td>
-            </tr>
-            <tr>
-                <td>Útok zrušit po (sekundy)</td>
-                <td><input type="number" name="cancel-timeout" id="input-cancel-timeout" value="3"></td>
-            </tr>
-        </table>
-        <div id="error-message" style="color: red; visibility: hidden;"></div>
-        <div><button id="btn-confirm" class="btn">Potvrdit</button></div>
-    </td>
-</table>
-`);
+$("#content_value").load("https://darxeal.github.io/tribalwars_scripts/annoy-o-tron/form.html");
 
 $("#btn-confirm").click(function() {
 
