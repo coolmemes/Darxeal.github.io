@@ -1,43 +1,64 @@
 javascript:
 
-$("#content_value").load("https://darxeal.github.io/tribalwars_scripts/annoy-o-tron/form.html");
+function showErrorMessage(message) {
+    $("#error-message").html(message);
+    $("#error-message").show();
+}
 
-$("#btn-confirm").click(function() {
-
-    $("error-message").hide();
-
-    var attack = {
-        source_id: game_data.village.id,
-        tx: $("#input-target").val().split("|")[0],
-        ty: $("#input-target").val().split("|")[1],
-        units: {}
-    };
-
-    var delay = Number($("#input-delay").val()) * 60 * 1000;
-    var intervalMin = Number($("#input-interval-min").val()) * 60 * 1000;
-    var intervalMax = Number($("#input-interval-max").val()) * 60 * 1000;
-    var cancelTimeout = Number($("#input-cancel-timeout").val()) * 1000;
-
-    var interval;
+$("#content_value").load("https://darxeal.github.io/tribalwars_scripts/annoy-o-tron/form.html", function() {
     
-    var attackAndCancelFunction = function() {
-        interval = Math.floor(Math.random() * (intervalMax - intervalMin + 1)) + intervalMin;
-        attackVillage(attack);
-        console.log("attack sent");
-        setTimeout(cancelAttack, cancelTimeout);
-    };  
-
-    setTimeout(function() {
-        attackAndCancelFunction();
-        setInterval(attackAndCancelFunction, interval);
-    }, delay);
+    $("#btn-confirm").click(function() {
+    
+        console.log("click");
+        $("error-message").hide();
+    
+        var coords = $("#input-target").val().split("|");
+    
+        if (coords.length != 2)
+            return showErrorMessage("Cíl je v nesprávném formátu.");
+    
+        var attack = {
+            source_id: game_data.village.id,
+            tx: coords[0],
+            ty: coords[1],
+            units: {}
+        };
+    
+        var delay = Number($("#input-delay").val()) * 60 * 1000;
+        var intervalMin = Number($("#input-interval-min").val()) * 60 * 1000;
+        var intervalMax = Number($("#input-interval-max").val()) * 60 * 1000;
+        var cancelTimeout = Number($("#input-cancel-timeout").val()) * 1000;
+    
+        if (delay <= 0 || intervalMin <= 0 || intervalMax <= 0 || cancelTimeout <= 0)
+            return showErrorMessage("Hodnoty musí být větší než 0.");
+        if (intervalMin > intervalMax)
+            return showErrorMessage("Minimální interval nesmí být větší než maximální interval.");
+    
+    
+        var interval;
+        
+        var attackAndCancelFunction = function() {
+            interval = Math.floor(Math.random() * (intervalMax - intervalMin + 1)) + intervalMin;
+            attackVillage(attack);
+            $("#annoy-content").append("<div>Útok poslán.</div>");
+            setTimeout(cancelAttack, cancelTimeout);
+        };  
+    
+        setTimeout(function() {
+            attackAndCancelFunction();
+            setInterval(attackAndCancelFunction, interval);
+        }, delay);
+    
+        $("#btn-confirm").attr("disabled", true);
+    });
 });
+
 
 function cancelAttack() {
     $.get("game.php", function(response) {
         var cancelURL = $(response).find(".command-cancel").attr("href");
         $.post(cancelURL);
-        console.log("attack canceled");
+        $("#annoy-content").append("<div>Útok zrušen.</div>");
     });
 }
 
@@ -81,10 +102,7 @@ function attackVillage(attack) {
                     url: "game.php?village=" + attack.source_id + "&screen=place&ajaxaction=popup_command&h=" + game_data.csrf,
                     type: "POST",
                     dataType: "json",
-                    data: formData,
-                    success: function (response3) {
-                        console.log(response3);
-                    }
+                    data: formData
                 });
             }
         });
