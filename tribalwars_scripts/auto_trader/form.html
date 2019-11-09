@@ -1,7 +1,7 @@
-<h4>Darxeal's Auto Premium Trader (last update 8.11.2019)</h4>
+<h4>Darxeal's Auto Premium Trader (last update 9.11.2019)</h4>
 <div id="vueapp" style="display: flex;">
     <div style="flex: 50%;">
-        <table class="resource-settings">
+        <table class="resource-settings" style="width: 100%;">
             <tr>
                 <th colspan="2"></th>
                 <th>Minimum to trade</th>
@@ -17,14 +17,16 @@
                     <input type="number" v-model.number="resourceMinimums[resource]" :disabled="!activeResources[resource]">
                 </td>
             </tr>
+            <tr>
+                <td colspan="3">    
+                    <button @click="activate" :disabled="active" class="btn">Activate</button>
+                    <button @click="stop" :disabled="!active" class="btn">Stop</button>
+                </td>
+            </tr>
         </table>
-        <div>
-            <button @click="activate" :disabled="active" class="btn">Activate</button>
-            <button @click="stop" :disabled="!active" class="btn">Stop</button>
-        </div>
     </div>
     <div style="flex: 50%;">
-        <table class="completed-exchanges">
+        <table class="completed-exchanges" style="width: 100%;">
             <tr>
                 <th colspan="42">Completed Exchanges</th>
             </tr>

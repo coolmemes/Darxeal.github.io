@@ -1,12 +1,14 @@
 $.getScript("https://darxeal.github.io/tribalwars_scripts/vue.js");
+// $(".graph").parent().load("http://localhost:8080/tribalwars_scripts/auto_trader/form.html");
 $(".graph").parent().load("https://darxeal.github.io/tribalwars_scripts/auto_trader/form.html");
 
 function waitForVueToStart() {
     if (typeof Vue === "undefined") setTimeout(waitForVueToStart, 10); else main();
 }
 
+var app;
 function main() {
-    var app = new Vue({
+    app = new Vue({
         el: "#vueapp",
         data: {
             active: false,
@@ -71,6 +73,7 @@ function main() {
                         if ($(".btn-confirm-yes").length == 0) return; // if the confirm button doesn't exist, abort
 
                         self.eventFire(".btn-confirm-yes", "click"); // click the confirm button
+                        $(".premium-exchange-input").val(''); // clear all inputs
 
                         setTimeout(function() { // wait a moment
                             // if there is a 'cancel' button, something went wrong
