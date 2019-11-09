@@ -1,0 +1,44 @@
+<h4>Darxeal's Auto Premium Trader (last update 8.11.2019)</h4>
+<div id="vueapp" style="display: flex;">
+    <div style="flex: 50%;">
+        <table class="resource-settings">
+            <tr>
+                <th colspan="2"></th>
+                <th>Minimum to trade</th>
+            </tr>
+            <tr v-for="resource in resources">
+                <td>
+                    <img :src="resource_image(resource)" :alt="resource">
+                </td>
+                <td>
+                    <input type="checkbox" v-model="activeResources[resource]">
+                </td>
+                <td>
+                    <input type="number" v-model.number="resourceMinimums[resource]" :disabled="!activeResources[resource]">
+                </td>
+            </tr>
+        </table>
+        <div>
+            <button @click="activate" :disabled="active" class="btn">Activate</button>
+            <button @click="stop" :disabled="!active" class="btn">Stop</button>
+        </div>
+    </div>
+    <div style="flex: 50%;">
+        <table class="completed-exchanges">
+            <tr>
+                <th colspan="42">Completed Exchanges</th>
+            </tr>
+            <tr v-for="exchange in completedExchanges">
+                <td>
+                    <img :src="resource_image(exchange.resource)" :alt="exchange.resource">
+                    {{ exchange.amount }}
+                </td>
+                <td>
+                    <img :src="image_src('resources/premium.png')" alt="Premium Points">
+                    <b style="color: red;">{{ exchange.cost }}</b>
+                </td>
+                <td>{{ exchange.time }}</td>
+            </tr>
+        </table>
+    </div>
+</div>
