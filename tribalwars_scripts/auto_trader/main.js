@@ -1,9 +1,16 @@
+// var host = "http://localhost:8080/";
+var host = "https://darxeal.github.io/";
+
 $.getScript("https://darxeal.github.io/tribalwars_scripts/vue.js");
-// $(".graph").parent().load("http://localhost:8080/tribalwars_scripts/auto_trader/form.html");
-$(".graph").parent().load("https://darxeal.github.io/tribalwars_scripts/auto_trader/form.html");
+$(".graph").parent().load(host + "tribalwars_scripts/auto_trader/form.html");
 
 function waitForVueToStart() {
     if (typeof Vue === "undefined") setTimeout(waitForVueToStart, 10); else main();
+}
+
+function storableResources(resource) {
+    return Math.floor(game_data.village.storage_max - game_data.village[resource]
+    - game_data.village[resource + '_prod'] * PremiumExchange.data.duration);
 }
 
 var app;
@@ -11,6 +18,7 @@ function main() {
     app = new Vue({
         el: "#vueapp",
         data: {
+            host: host,
             active: false,
             resources: ["wood", "stone", "iron"],
             activeResources: {
@@ -19,11 +27,17 @@ function main() {
                 iron: false
             },
             resourceMinimums: {
-                wood: 0,
-                stone: 0,
-                iron: 0
+                wood: PremiumExchange.calculateRateForOnePoint("wood"),
+                stone: PremiumExchange.calculateRateForOnePoint("stone"),
+                iron: PremiumExchange.calculateRateForOnePoint("iron")
+            },
+            resourceLimits: {
+                wood: storableResources("wood"),
+                stone: storableResources("stone"),
+                iron: storableResources("iron")
             },
             completedExchanges: [],
+            pendingConfirmationExchange: null,
             interval: null
         },
         methods: {
@@ -58,8 +72,24 @@ function main() {
                     time: new Date().toLocaleTimeString()
                 });
             },
+            totalExchangedResources: function(resource) {
+                var sum = 0;
+                for (let i = 0; i < this.completedExchanges.length; i++) {
+                    if (this.completedExchanges[i].resource == resource)
+                        sum += this.completedExchanges[i].amount;
+                }
+                return sum;
+            },
+            limitReached: function(resource) {
+                return this.totalExchangedResources(resource) >= this.resourceLimits[resource];
+            },
             interceptConfirmationDialogData: function(data) {
-                this.addCompletedExchange(data.resource, data.amount, data.cost);
+                this.pendingConfirmationExchange = {
+                    resource: data.resource,
+                    amount: data.amount,
+                    cost: data.cost,
+                    time: new Date().toLocaleTimeString()
+                };
             },
             exchange: function(resource, amount) {
                 $(".premium-exchange-input").val(''); // clear all other inputs
@@ -70,22 +100,31 @@ function main() {
                     $(".btn-premium-exchange-buy").click(); // click the exchange button
 
                     setTimeout(function() { // wait for the game ajax request
-                        if ($(".btn-confirm-yes").length == 0) return; // if the confirm button doesn't exist, abort
+                        $(".premium-exchange-input").val(''); // clear all inputs
+
+                        // if the confirm button isn't on screen, abort
+                        if (!$(".btn-confirm-yes").is(":visible")) {
+                            console.log("exchange failed before it even began");
+                            return;
+                        } 
 
                         self.eventFire(".btn-confirm-yes", "click"); // click the confirm button
-                        $(".premium-exchange-input").val(''); // clear all inputs
 
                         setTimeout(function() { // wait a moment
                             // if there is a 'cancel' button, something went wrong
-                            // and we need to click it
-                            if ($(".btn-confirm-no").length > 0) {
+                            // and we need to click it to get rid of the dialog
+                            if ($(".btn-confirm-no").is(":visible")) {
                                 self.eventFire(".btn-confirm-no", "click");
-                                // self.completedExchanges.pop();
+                                self.pendingConfirmationExchange = null;
+                                console.log("too late");
+                            } else {
+                                self.completedExchanges.push(self.pendingConfirmationExchange);
+                                console.log("successfully exchanged", resource, amount);
                             }
                         }, 500);
 
                     }, 500);
-                }, 10);
+                }, 50);
             },
             /**
              * This runs when the 'Activate' button is pressed
@@ -106,17 +145,25 @@ function main() {
                     old(data);
                 };
 
-                this.interval = setInterval(this.tick, 4000);
+                this.interval = setInterval(this.tick, 3000);
             },
             checkForExchangableResources: function() {
                 for (let i = 0; i < 3; i++) {
                     var resource = this.resources[i];
+
                     var inStock = PremiumExchange.data.stock[resource];
                     var storable = game_data.village.storage_max - game_data.village[resource];
                     var minimum = this.resourceMinimums[resource];
+                    var alreadyExchanged = this.totalExchangedResources(resource);
+                    var totalLimit = this.resourceLimits[resource];
+                    var rate = PremiumExchange.calculateRateForOnePoint(resource);
+                    var missingToLimit = totalLimit - alreadyExchanged + rate;
+                    
+                    var amount = Math.min(storable, inStock, missingToLimit);
+                    var roundedAmount = Math.floor(amount / rate) * rate;
 
-                    if (this.activeResources[resource] && storable >= minimum && inStock >= minimum) {
-                        this.exchange(resource, Math.min(storable, inStock));
+                    if (this.activeResources[resource] && roundedAmount >= minimum) {
+                        this.exchange(resource, roundedAmount);
                         break;
                     }
                 }
@@ -128,6 +175,23 @@ function main() {
             stop: function() {
                 this.active = false;
                 clearInterval(this.interval);
+            }
+        },
+        computed: {
+            allLimitsReached: function() {
+                for (let i = 0; i < this.resources.length; i++) {
+                    const resource = this.resources[i];
+                    if (this.activeResources[resource] && !this.limitReached(resource))
+                        return false;
+                }
+                return true;
+            },
+            spentPremiumPoints: function() {
+                var sum = 0;
+                for (let i = 0; i < this.completedExchanges.length; i++) {
+                    sum += this.completedExchanges[i].cost;
+                }
+                return sum;
             }
         }
     });
