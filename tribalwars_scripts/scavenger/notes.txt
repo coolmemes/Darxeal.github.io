@@ -1,0 +1,11 @@
+Math.round((Math.pow(t * option.loot_factor * 100 * t * option.loot_factor, option.duration_exponent) + option.duration_initial_seconds) * option.duration_factor)
+((loot_factor^2 * x^2 * 100) ^ duration_exponent + duration_initial_seconds) * duration_factor
+d = loot_factor
+a = duration_exponent
+b = duration_initial_seconds
+c = duration_factor
+((d*d * x*x * 100)^a + b) * c
+x = -(-(100^(-a)*(b*c - y))/c)^(1/(2*a))/d
+x = -Math.pow(-(Math.pow(100,-a)*(b*c - y))/c, 1/(2*a))/d
+-Math.pow(-(Math.pow(100,-duration_exponent)*(duration_initial_seconds*duration_factor - y))/duration_factor, 1/(2*duration_exponent))/loot_factor
+-Math.pow(-(Math.pow(100,-option.duration_exponent)*(option.duration_initial_seconds*option.duration_factor - y))/option.duration_factor, 1/(2*option.duration_exponent))/option.loot_factor

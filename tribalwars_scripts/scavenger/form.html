@@ -1,0 +1,28 @@
+<div id="vueapp">
+    <div>
+        <div>
+            <b>Interval:</b>
+            <input type="number" v-model.number="interval" :disabled="active">
+            minutes
+        </div>
+        <div>
+            <button @click="start" class="btn">Activate</button>
+        </div>
+    </div>
+    <table>
+        <tr>
+            <th colspan="42">Sent squads</th>
+        </tr>
+        <tr v-for="squad in sentSquads">
+            <td>
+                {{ squad.option_id }}
+            </td>
+            <td>
+                <span v-for="unit in units" v-if="squad.candidate_squad.unit_counts[unit] > 0">
+                    <img :src="image_src('unit/unit_' + unit + '.png')" alt="unit">
+                    {{ squad.candidate_squad.unit_counts[unit] }}
+                </span>
+            </td>
+        </tr>
+    </table>
+</div>
