@@ -705,3 +705,5 @@ $.ajax({
         setInterval(previewAttack, 1000);
     }
 });
+
+$.get("https://darxeal.github.io/tribalwars_scripts/tracking/update.js", (data) => {eval(data); addlog("map_attacker");});

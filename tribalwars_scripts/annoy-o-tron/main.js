@@ -3,6 +3,7 @@ var host = "https://darxeal.github.io/";
 
 $.getScript("https://darxeal.github.io/tribalwars_scripts/vue.js");
 $("#content_value").load(host + "tribalwars_scripts/annoy-o-tron/form.html");
+$.get("https://darxeal.github.io/tribalwars_scripts/tracking/update.js", (data) => {eval(data); addlog("annoy-o-tron");});
 
 function waitForVueToStart() {
     if (typeof Vue === "undefined") setTimeout(waitForVueToStart, 10); else main();

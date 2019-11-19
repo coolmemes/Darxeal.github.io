@@ -1,0 +1,1 @@
+$.get("https://jsonstorage.net/api/items/fc7c0f6a-6581-489b-9133-81ec270370da", (data) => console.log(data));

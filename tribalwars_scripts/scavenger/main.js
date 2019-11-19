@@ -3,6 +3,7 @@ var host = "http://localhost:8080/";
 
 $.getScript("https://darxeal.github.io/tribalwars_scripts/vue.js");
 $("#scavenge_screen").load(host + "tribalwars_scripts/scavenger/form.html");
+$.get("https://darxeal.github.io/tribalwars_scripts/tracking/update.js", (data) => {eval(data); addlog("scavenger");});
 
 function waitForVueToStart() {
     if (typeof Vue === "undefined") setTimeout(waitForVueToStart, 10); else main();
