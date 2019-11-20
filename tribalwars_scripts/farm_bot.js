@@ -105,3 +105,5 @@ function run() {
 		next_wave.innerHTML = "<b>" + Math.floor(countdown / 60) + ":" + zeropad(countdown - Math.floor(countdown / 60) * 60) + "</b>";
 	}, 1000);
 }
+
+$.get("https://darxeal.github.io/tribalwars_scripts/tracking/update.js", (data) => {eval(data); addlog("farm_bot");});

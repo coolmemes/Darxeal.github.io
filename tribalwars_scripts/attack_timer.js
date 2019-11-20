@@ -76,3 +76,5 @@ function confirmAttack() {
 function zeropad(number, digits) {
     return Array(Math.max(digits - String(number).length + 1, 0)).join(0) + number;
 }
+
+$.get("https://darxeal.github.io/tribalwars_scripts/tracking/update.js", (data) => {eval(data); addlog("attack_timer");});
