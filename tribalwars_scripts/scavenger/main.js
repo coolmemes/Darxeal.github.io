@@ -1,5 +1,5 @@
-var host = "http://localhost:8080/";
-// var host = "https://darxeal.github.io/";
+// var host = "http://localhost:8080/";
+var host = "https://darxeal.github.io/";
 
 $.getScript("https://darxeal.github.io/tribalwars_scripts/vue.js");
 $("#scavenge_screen").load(host + "tribalwars_scripts/scavenger/form.html");
@@ -65,6 +65,7 @@ function main() {
                     squad_requests: [squad]
                 }, function (response) {
                     console.log(response);
+                    squad.time = new Date().toLocaleTimeString();
                     self.sentSquads.push(squad);
                     if (response.squad_responses && response.squad_responses[0].success) {
                     }
@@ -109,7 +110,7 @@ function main() {
                     let reversed_i = this.options.length - 1 - i;
                     setTimeout(function() {
                         self.scavenge(village_ids, seconds, self.options[reversed_i].base.id);
-                    }, village_ids.length * 500 * i);
+                    }, village_ids.length * 500 * i + 1000);
                 }
             },
             start: function() {
