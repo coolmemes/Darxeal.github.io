@@ -18,8 +18,9 @@ function main() {
             options: ScavengeScreen.village_synchronizer.options,
             interval: 60,
             active: false,
+            allowedUnits: Object.keys(ScavengeScreen.sendable_units),
             sentSquads: [],
-            units: game_data.units
+            units: Object.keys(ScavengeScreen.sendable_units)
         },
         methods: {
             image_src: function(image) {
@@ -78,12 +79,16 @@ function main() {
                 var carry_sum = 0;
 
                 for (var unit in ScavengeScreen.sendable_units) {
+                    if (!this.allowedUnits.includes(unit)) continue;
+
                     var home = village_data.unit_counts_home[unit];
                     var needed = this.unitsNeededForCarry(unit, desired_carry - carry_sum);
                     result[unit] = Math.min(home, needed);
                     if (home >= needed) break;
                     carry_sum += ScavengeScreen.sendable_units[unit].carry * result[unit];
                 }
+                if (carry_sum == 0)
+                    return null;
                 return result;
             },
             scavenge: function (village_ids, seconds, option_id) {
@@ -98,9 +103,11 @@ function main() {
                             continue;
 
                         var units = self.calculateUnitsForScavenge(village_data, option_id, seconds);
-                        setTimeout(function() {
-                            self.sendSquad(village_id, units, option_id);
-                        }, i * 500);
+                        if (units) {
+                            setTimeout(function() {
+                                self.sendSquad(village_id, units, option_id);
+                            }, i * 500);
+                        }
                     }
                 });
             },
@@ -110,7 +117,7 @@ function main() {
                     let reversed_i = this.options.length - 1 - i;
                     setTimeout(function() {
                         self.scavenge(village_ids, seconds, self.options[reversed_i].base.id);
-                    }, village_ids.length * 500 * i + 1000);
+                    }, village_ids.length * 1000 * i);
                 }
             },
             start: function() {
@@ -119,7 +126,7 @@ function main() {
                 self.scavengeAllOptions([game_data.village.id], self.interval * 60);
                 setInterval(function() {
                     self.scavengeAllOptions([game_data.village.id], self.interval * 60);
-                }, this.interval * 60 * 1000);
+                }, (this.interval + 1) * 60 * 1000);
             }
         }
     });

@@ -4,6 +4,22 @@
         <table>
             <tr>
                 <td>
+                    <table>
+                        <tr>
+                            <th v-for="unit in units">
+                                <img :src="image_src('unit/unit_' + unit + '.png')" :alt="unit">
+                            </th>
+                        </tr>
+                        <tr>
+                            <td v-for="unit in units">
+                                <input type="checkbox" v-model="allowedUnits" :value="unit">
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>
                     <b>Interval:</b>
                     <input type="number" v-model.number="interval" :disabled="active">
                     minut
