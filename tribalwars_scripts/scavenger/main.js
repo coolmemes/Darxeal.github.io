@@ -83,9 +83,10 @@ function main() {
 
                     var home = village_data.unit_counts_home[unit];
                     var needed = this.unitsNeededForCarry(unit, desired_carry - carry_sum);
+                    needed = Math.max(needed, 0);
                     result[unit] = Math.min(home, needed);
-                    if (home >= needed) break;
                     carry_sum += ScavengeScreen.sendable_units[unit].carry * result[unit];
+                    if (needed > 0 && home >= needed) break;
                 }
                 if (carry_sum == 0)
                     return null;
